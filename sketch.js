@@ -1,36 +1,35 @@
 var iss;
 var url = "http://api.open-notify.org/iss-now.json?callback=?";
+var tick = 0; 
+var lon = 0;
+var lat = 0;
+var d;
 
-  var d1;
-  var d2;
-  var d3;
-  var d4;
-  var d5;
-  var d6; 
 
-//Scott Joseph Kelly_USA
-var lat1 = 40.788611;
-var lon1 =  -74.255278;
-
-//Sergei Alexandrowitsch Wolkow_UKRAINE
-var lat2 = 49.835556;
-var lon2 = 36.683611;
-
-//Mikhail Kornienko_RUSSIA
-var lat3 = 53.166667;
-var lon3 = 48.466667;
-
-//Dr. Kjell Norwood Lindgren_USA_(born in Taipei, Taiwan)
-var lat4 = 25.033333;
-var lon4 = 121.533333;
-
-// Oleg Kononenko_RUSSIA_(Tukmenistan)
-var lat5 = 39.085833;
-var lon5 = 63.579444;
-
-//Kimiya Yui_JAPAN_()
-var lat6 = 36.25;
-var lon6 = 138.099722;
+var astro1 = {//Scott Joseph Kelly_USA
+    lat : 40.788611,
+    lon :  -74.255278
+};
+var astro2 = {//Kimiya Yui_JAPAN_()
+lat: 36.25,
+lon: 138.09972
+};
+var astro3 = {//Sergei Alexandrowitsch Wolkow_UKRAINE
+lat: 49.835556,
+lon: 36.683611
+};
+var astro4 = {//Mikhail Kornienko_RUSSIA
+lat: 53.166667,
+lon: 48.466667
+};
+var astro5 = {//Dr. Kjell Norwood Lindgren_USA_(born in Taipei, Taiwan)
+lat: 25.033333,
+lon: 121.53333
+};
+var astro6 = {// Oleg Kononenko_RUSSIA_(Tukmenistan)
+lat: 39.085833,
+lon: 63.579444
+};
 
 /**
  * getData calls the the JSONP API of open notify
@@ -71,7 +70,7 @@ $(document).ready(function() {
 
 function setup() {
 
-colorMode(HSL,100,100,100);
+colorMode(HSB,100,100,100,100);
 
  
   console.log('We received the data from the ISS location via a jsonp callback');
@@ -82,15 +81,24 @@ colorMode(HSL,100,100,100);
   canvas.parent('sketch');
  
 
+
 }
 
 function draw() {
 
+  if (tick % 500 === 0) {
+    iss = JSON.parse(sessionStorage.getItem('data')); // get the data from storage
+    console.log(iss); // just to prof that we have data
+    // so when we got the data we can
+    // grab lat/lon from it and draw our marker
+    if (iss !== null) {
+      lat = iss.iss_position.latitude; // get lat of the current position
+      lon = iss.iss_position.longitude; // get lat of the current position
+    }
+  }
+  tick++;// tick tock some time has passed
 
-  var lat = iss.iss_position.latitude; // get lat of the current position
-  var lon = iss.iss_position.longitude;// get lat of the current position
-  
-
+// http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
       
   function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
     var R = 6371; // Radius of the earth in km
@@ -105,37 +113,62 @@ function draw() {
     return d;
   }
 
+  // add distance_home to astro (oobject)
+astro1.d = getDistanceFromLatLonInKm(lat,lon,astro1.lat,astro1.lon);
+astro2.d = getDistanceFromLatLonInKm(lat,lon,astro2.lat,astro2.lon);
+astro3.d = getDistanceFromLatLonInKm(lat,lon,astro3.lat,astro3.lon);
+astro4.d = getDistanceFromLatLonInKm(lat,lon,astro4.lat,astro4.lon);
+astro5.d = getDistanceFromLatLonInKm(lat,lon,astro5.lat,astro5.lon);
+astro6.d = getDistanceFromLatLonInKm(lat,lon,astro6.lat,astro6.lon);
+
+
   function deg2rad(deg) {
     return deg * (Math.PI/180);
   }
-  
- d1 = getDistanceFromLatLonInKm(lat,lon,lat1,lon1);
- d2 = getDistanceFromLatLonInKm(lat,lon,lat2,lon2);
- d3 = getDistanceFromLatLonInKm(lat,lon,lat3,lon3);
- d4 = getDistanceFromLatLonInKm(lat,lon,lat4,lon4);
- d5 = getDistanceFromLatLonInKm(lat,lon,lat5,lon5);
- d6 = getDistanceFromLatLonInKm(lat,lon,lat6,lon6);
 
-  console.log(d1,d2,d3,d4,d5,d6);
+  function lineAtAngle(x1, y1, length, angle) {
 
-  
-// http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
+ line(x1, y1,x1 + length * Math.cos(angle),y1 + length * Math.sin(angle)); 
+}
+function astroEllipse(x1, y1, length, angle) {
 
+  ellipse(x1 + length * Math.cos(angle),y1 + length * Math.sin(angle),25,25); 
+}
+  // console.log(astro1);
+  // console.log(astro2);
 
-background(212,71,28,50);
+background(0);
 noFill();
-stroke(0,0,100,100);
+stroke(0,0,100,100,20);
 var h = height/2;
 var w = width/2;
-text(timeConverter(iss.timestamp),400,550);
-ellipse(w,h,d1/50,d1/50 );
-ellipse(w,h,d2/50,d2/50 );
-ellipse(w,h,d5/50,d5/50 );
-ellipse(w,h,d4/50,d4/50 );
-ellipse(w,h,d5/50,d5/50 );
-ellipse(w,h,d6/50,d6/50 );
-// line(width/2,height/2,d6/200,height/2);
-// line(width/2,height/2+50,d5/200,height/2+50);
+text(timeConverter(iss.timestamp),w,550);
+
+
+function line_ellipse (radiant,angle){
+
+col = map(radiant,10,400,20,100);
+  stroke(70, 70,col);
+
+fill(0,0,10,10);
+ellipse(w,h,radiant*2,radiant*2);
+lineAtAngle(w,h,radiant,radians(angle));
+fill(0,0,100,col);
+astroEllipse(w,h, radiant, radians(angle));
+
+console.log(radiant);
+
+}
+
+line_ellipse (astro1.d/50,300);
+line_ellipse (astro2.d/50,0);
+line_ellipse (astro3.d/50,60);
+line_ellipse (astro4.d/50,120);
+line_ellipse (astro5.d/50,180);
+line_ellipse (astro6.d/50,240);
+
+
+
 
 
 }
