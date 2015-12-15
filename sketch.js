@@ -155,7 +155,9 @@ astroEllipse( dist, radians(angle));
 }
 image(star,0,0);
 noStroke();
-text(timeConverter(iss.timestamp),w-50,780);
+textSize(75);
+textAlign(CENTER);
+text(timeConverter(iss.timestamp),w,780);
 
 line_ellipse_astro (astro1.d/50,300);
 line_ellipse_astro (astro2.d/50,0);
