@@ -4,6 +4,12 @@ var tick = 0;
 var lon = 0;
 var lat = 0;
 var d;
+var neutraDisplay;
+
+function preload(){
+
+  neutraDisplay = loadFont('NeutraDisplay-Titling.otf');
+}
 
 
 var astro1 = {//Scott Joseph Kelly_USA
@@ -72,7 +78,7 @@ function setup() {
 
 colorMode(HSB,100,100,100,100);
 
- home = loadImage('love.png');
+ home = loadImage('love01.png');
  star = loadImage('clearnight.png');
   console.log('We received the data from the ISS location via a jsonp callback');
   console.log(timeConverter(iss.timestamp)); // log the time
@@ -80,30 +86,11 @@ colorMode(HSB,100,100,100,100);
  
   var canvas = createCanvas(800,800); // draw the canvas
   canvas.parent('sketch');
-<<<<<<< HEAD
- 
-
-
-=======
->>>>>>> refs/remotes/origin/master
 }
 
 function draw() {
 
-  if (tick % 500 === 0) {
-    iss = JSON.parse(sessionStorage.getItem('data')); // get the data from storage
-    console.log(iss); // just to prof that we have data
-    // so when we got the data we can
-    // grab lat/lon from it and draw our marker
-    if (iss !== null) {
-      lat = iss.iss_position.latitude; // get lat of the current position
-      lon = iss.iss_position.longitude; // get lat of the current position
-    }
-  }
-  tick++;// tick tock some time has passed
 
-<<<<<<< HEAD
-=======
 
   if (tick % 500 === 0) {
     iss = JSON.parse(sessionStorage.getItem('data')); // get the data from storage
@@ -117,7 +104,6 @@ function draw() {
   }
   tick++;// tick tock some time has passed
 
->>>>>>> refs/remotes/origin/master
 // http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
       
   function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
@@ -134,72 +120,18 @@ function draw() {
   }
 
   // add distance_home to astro (oobject)
-<<<<<<< HEAD
-astro1.d = getDistanceFromLatLonInKm(lat,lon,astro1.lat,astro1.lon);
-astro2.d = getDistanceFromLatLonInKm(lat,lon,astro2.lat,astro2.lon);
-astro3.d = getDistanceFromLatLonInKm(lat,lon,astro3.lat,astro3.lon);
-astro4.d = getDistanceFromLatLonInKm(lat,lon,astro4.lat,astro4.lon);
-astro5.d = getDistanceFromLatLonInKm(lat,lon,astro5.lat,astro5.lon);
-astro6.d = getDistanceFromLatLonInKm(lat,lon,astro6.lat,astro6.lon);
-=======
 astro1.d = getDistanceFromLatLonInKm(lat,lon,astro1.lat,astro1.lon)+400;
 astro2.d = getDistanceFromLatLonInKm(lat,lon,astro2.lat,astro2.lon)+400;
 astro3.d = getDistanceFromLatLonInKm(lat,lon,astro3.lat,astro3.lon)+400;
 astro4.d = getDistanceFromLatLonInKm(lat,lon,astro4.lat,astro4.lon)+400;
 astro5.d = getDistanceFromLatLonInKm(lat,lon,astro5.lat,astro5.lon)+400;
 astro6.d = getDistanceFromLatLonInKm(lat,lon,astro6.lat,astro6.lon)+400;
->>>>>>> refs/remotes/origin/master
 
 
   function deg2rad(deg) {
     return deg * (Math.PI/180);
   }
 
-<<<<<<< HEAD
-  function lineAtAngle(x1, y1, length, angle) {
-
- line(x1, y1,x1 + length * Math.cos(angle),y1 + length * Math.sin(angle)); 
-}
-function astroEllipse(x1, y1, length, angle) {
-
-  ellipse(x1 + length * Math.cos(angle),y1 + length * Math.sin(angle),25,25); 
-}
-  // console.log(astro1);
-  // console.log(astro2);
-
-background(0);
-noFill();
-stroke(0,0,100,100,20);
-var h = height/2;
-var w = width/2;
-text(timeConverter(iss.timestamp),w,550);
-
-
-function line_ellipse (radiant,angle){
-
-col = map(radiant,10,400,20,100);
-  stroke(70, 70,col);
-
-fill(0,0,10,10);
-ellipse(w,h,radiant*2,radiant*2);
-lineAtAngle(w,h,radiant,radians(angle));
-fill(0,0,100,col);
-astroEllipse(w,h, radiant, radians(angle));
-
-console.log(radiant);
-
-}
-
-line_ellipse (astro1.d/50,300);
-line_ellipse (astro2.d/50,0);
-line_ellipse (astro3.d/50,60);
-line_ellipse (astro4.d/50,120);
-line_ellipse (astro5.d/50,180);
-line_ellipse (astro6.d/50,240);
-
-
-
-=======
 var h = height/2;
 var w = width/2;
 
@@ -217,19 +149,24 @@ function astroEllipse( dist, angle) {
 
 function line_ellipse_astro (dist,angle){
 
-col1 = map(dist,50,800,200,360);
+col1 = map(dist,50,18000/50,160,0);
 noFill();
 stroke(col1, 70,70,70);
 ellipse(w,h,dist*2,dist*2);
 lineAtAngle(dist,radians(angle));
 astroEllipse( dist, radians(angle));
 
-// console.log(dist);
+console.log(col1);
 
 }
 image(star,0,0);
+fill(0,0,100,7);
+textAlign(CENTER);
 noStroke();
-text(timeConverter(iss.timestamp),w-50,780);
+textSize(72);
+textFont(neutraDisplay);
+text(timeConverter(iss.timestamp),w,780);
+
 
 line_ellipse_astro (astro1.d/50,300);
 line_ellipse_astro (astro2.d/50,0);
@@ -239,7 +176,8 @@ line_ellipse_astro (astro5.d/50,180);
 line_ellipse_astro (astro6.d/50,240);
 
 
-if (astro1.d/50 < 50 || astro2.d/50 < 50 || astro3.d/50 < 50 || astro4.d/50 < 50 || astro5.d/50 < 50 || astro6.d/50 < 50){
+
+if (astro1.d || astro2.d/50 < 50 || astro3.d/50 < 50 || astro4.d/50 < 50 || astro5.d/50 < 50 || astro6.d/50 < 50){
   fill(0);
   ellipse(w,h,35,35);
   image(home,w-12.5,h-10);
@@ -247,9 +185,16 @@ if (astro1.d/50 < 50 || astro2.d/50 < 50 || astro3.d/50 < 50 || astro4.d/50 < 50
 }else{
  fill(0);
  ellipse(w,h,35,35);
-}
->>>>>>> refs/remotes/origin/master
 
+
+
+ if(astro1.d/50 > 50){
+
+textSize(18);
+text('Scott Joseph Kelly_USA',100,100);
+
+ }
+}
 
 console.log(astro1.d,'astro1');
 console.log(astro2.d,'astro2');
