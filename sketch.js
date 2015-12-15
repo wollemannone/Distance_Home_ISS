@@ -143,7 +143,7 @@ function astroEllipse( dist, angle) {
 
 function line_ellipse_astro (dist,angle){
 
-col1 = map(dist,50,800,200,360);
+col1 = map(dist,50,18000/50,160,0);
 noFill();
 stroke(col1, 70,70,70);
 ellipse(w,h,dist*2,dist*2);
